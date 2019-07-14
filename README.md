@@ -120,18 +120,106 @@ python src/utils/split_dataset.py --dir=data/datasets/cracks/ --train=80 --test=
 Official image tensorflow/serving:1.12.3-gpu is used for serving.
 
 ```bash
-export SERVING_MODEL=febrero-cpu-friendly_weights
-docker run -t --rm --runtime=nvidia -p 8501:8501 -v $(realpath $PWD/models):/models/ -e MODEL_NAME=$SERVING_MODEL tensorflow/serving:1.12.3-gpu
+export SERVING_MODEL=simplenet_cracks8020
+docker run -t --rm --runtime=nvidia -p 8501:8501 -v $(realpath $PWD/models):/models/ --name crack_classification_service -e MODEL_NAME=$SERVING_MODEL tensorflow/serving:1.12.3-gpu
 ```
-Query model status from:
+#### Using the REST API
 
+Query model status:
 
-http://localhost:8501/v1/models/febrero-cpu-friendly_weights
+```bash
+curl http://localhost:8501/v1/models/simplenet_cracks8020
+```
+
+```json
+{
+ "model_version_status": [
+  {
+   "version": "1",
+   "state": "AVAILABLE",
+   "status": {
+    "error_code": "OK",
+    "error_message": ""
+   }
+  }
+ ]
+}
+```
 
 Query model metadata:
 
+```bash
+ curl http://localhost:8501/v1/models/simplenet_cracks8020/metadata
+```
 
-http://localhost:8501/v1/models/febrero-cpu-friendly_weights/metadata
+```json
+{
+"model_spec":{
+ "name": "simplenet_cracks8020",
+ "signature_name": "",
+ "version": "1"
+}
+,
+"metadata": {"signature_def": {
+ "signature_def": {
+  "serving_default": {
+   "inputs": {
+    "input_image": {
+     "dtype": "DT_FLOAT",
+     "tensor_shape": {
+      "dim": [
+       {
+        "size": "-1",
+        "name": ""
+       },
+       {
+        "size": "64",
+        "name": ""
+       },
+       {
+        "size": "64",
+        "name": ""
+       },
+       {
+        "size": "3",
+        "name": ""
+       }
+      ],
+      "unknown_rank": false
+     },
+     "name": "conv2d_6_input:0"
+    }
+   },
+   "outputs": {
+    "dense_7/Softmax:0": {
+     "dtype": "DT_FLOAT",
+     "tensor_shape": {
+      "dim": [
+       {
+        "size": "-1",
+        "name": ""
+       },
+       {
+        "size": "2",
+        "name": ""
+       }
+      ],
+      "unknown_rank": false
+     },
+     "name": "dense_7/Softmax:0"
+    }
+   },
+   "method_name": "tensorflow/serving/predict"
+  }
+ }
+}
+}
+}
+```
+
+#### Using the GRPC API
+
+WIP
 
 
 ## References
