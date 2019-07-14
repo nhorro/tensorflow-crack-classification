@@ -125,7 +125,7 @@ docker run -t --rm --runtime=nvidia -p 8501:8501 -v $(realpath $PWD/models):/mod
 ```
 #### Using the REST API
 
-Query model status:
+Query model status to check model availability.
 
 ```bash
 curl http://localhost:8501/v1/models/simplenet_cracks8020
@@ -146,7 +146,7 @@ curl http://localhost:8501/v1/models/simplenet_cracks8020
 }
 ```
 
-Query model metadata:
+Query model metadata to obtain method signature definition (in this case, predict method input is a 64x64x3 image of DT_FLOAT elements).
 
 ```bash
  curl http://localhost:8501/v1/models/simplenet_cracks8020/metadata
@@ -216,6 +216,8 @@ Query model metadata:
 }
 }
 ```
+
+For an example of how to consume the API to classify an image, see notebooks/ConsumingMachineModelServiceRESTAPIExample.ipynb (adjust service endpoint).
 
 #### Using the GRPC API
 
