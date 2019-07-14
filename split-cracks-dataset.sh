@@ -1,0 +1,1 @@
+python src/utils/split_dataset.py --dir=data/datasets/cracks/ --train=80 --test=20 --output=data/datasets/cracks_splitted8020

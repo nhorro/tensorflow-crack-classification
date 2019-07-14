@@ -1,1 +1,3 @@
 data/datasets/**/*
+__pycache__/
+*.py[cod]

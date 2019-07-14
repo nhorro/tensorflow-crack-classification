@@ -1,5 +1,24 @@
 # -*- coding: utf-8 -*-
-# TODO: imports
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import ELU
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import CSVLogger
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.callbacks import TensorBoard
+
+from IPython.display import SVG
+from tensorflow.keras.utils import plot_model
+import matplotlib.pyplot as plt
 
 
 def build_simplenet(input_shape=(64,64,3),n_output_classes=2):
@@ -96,4 +115,3 @@ def train_simplenet( model,
             validation_steps=step_size_validation,
             callbacks=[check_pointer, csv_logger,tensorboard_logger] 
     )
-    return True

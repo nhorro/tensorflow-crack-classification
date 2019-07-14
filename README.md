@@ -68,17 +68,17 @@ where:
 
 **Note:**  the following instruction steps use a [custom docker image](https://hub.docker.com/r/nhorro/tensorflow1.12-py3-jupyter-opencv) based on official Tensorflow Docker image for GPU. 
 
-Verifified with Ubuntu 18.04 and Geforce GTX 950M with nvidia driver version 390.116.
+Tested with Ubuntu 18.04 and Geforce GTX 950M with nvidia driver version 390.116.
 
 #### Steps
 
-Clone repository
+1. Clone repository
 
 ```bash
 git clone https://github.com/nhorro/tensorflow-crack-classification.git
 ```
 
-Download crack dataset
+2. Download crack dataset
 
 ```bash
 wget https://data.mendeley.com/datasets/5y9wdsg2zt/1/files/c0d86f9f-852e-4d00-bf45-9a0e24e3b932/Concrete%20Crack%20Images%20for%20Classification.rar
@@ -86,11 +86,34 @@ mkdir -pv data/datasets/cracks
 unrar x Concrete\ Crack\ Images\ for\ Classification.rar ./data/datasets/cracks
 ```
 
-Prepare a a training set and evaluation set.
+3. Split the original dataset in training and evaluation (80-20):
 
-Train the model
+```bash
+python src/utils/split_dataset.py --dir=data/datasets/cracks/ --train=80 --test=20 --output=data/datasets/cracks_splitted8020
+```
 
-Export the model as Tensorflow SavedModel format to deploy with Tensorflow Serving.
+4. Train the model from a notebook:
+
+   1. Open notebook Train and export CNN model.ipynb and run. 
+
+5. Optional: monitor and debug with tensorboard. 
+
+   1. Install tensorboard if not already installed:
+
+   ```bash
+   pip install tensorboard # if not installed
+   ```
+
+   Run tensorboard and connect to http://localhost:6006:
+
+   ```bash
+   tensorboard --logdir=tensorboard_logs
+   ```
+
+6. Export the model as Tensorflow SavedModel format to deploy with Tensorflow Serving.
+
+   1. Open notebook KerasToTensorflowServing.ipynb.
+   2. Select a valid hd5 file from model-checkpoints and run notebook.
 
 ### Serve a model using tensorflow-serving docker image
 
