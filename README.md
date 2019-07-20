@@ -2,7 +2,11 @@
 
 This is part of project that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
 
-Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the paper (CrackNet).
+Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet).
+
+Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack.
+
+This service can be consumed by another application that stores the results of each image of a larger video sequence to perform further analysis, ie: tubelet clustering.
 
 #### SimpleNET trained on cracks dataset
 
@@ -86,10 +90,16 @@ mkdir -pv data/datasets/cracks
 unrar x Concrete\ Crack\ Images\ for\ Classification.rar ./data/datasets/cracks
 ```
 
-3. Split the original dataset in training and evaluation (80-20):
+3. Split the original dataset in training and evaluation (suggested: 80%-20%):
 
 ```bash
 python src/utils/split_dataset.py --dir=data/datasets/cracks/ --train=80 --test=20 --output=data/datasets/cracks_splitted8020
+```
+
+4. Run docker container for development (note: --network="host" is to enable access to the tensorflow serving API):
+
+```bash
+docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name tensorflowdev1 --network="host" -p 8888:8888 custom-tensorflow1.12-py3-jupyter-opencv
 ```
 
 4. Train the model from a notebook:

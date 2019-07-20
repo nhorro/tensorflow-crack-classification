@@ -1,3 +1,4 @@
 data/datasets/**/*
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints
