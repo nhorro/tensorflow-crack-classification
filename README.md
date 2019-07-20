@@ -4,9 +4,11 @@ This is part of project that attempts to reproduce the paper *Deep Learning-base
 
 Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet).
 
-Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack.
+Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline is implemented consuming this service-
 
-This service can be consumed by another application that stores the results of each image of a larger video sequence to perform further analysis, ie: tubelet clustering.
+![Nuclear Plant Inspection Processing Pipeline](doc/assets/nuclear-plant-crack-inspection-pipeline-1.png)
+
+
 
 #### SimpleNET trained on cracks dataset
 
@@ -227,7 +229,9 @@ Query model metadata to obtain method signature definition (in this case, predic
 }
 ```
 
-For an example of how to consume the API to classify an image, see notebooks/ConsumingMachineModelServiceRESTAPIExample.ipynb (adjust service endpoint).
+An example notebook of how to consume the API to classify an image [is included here](./src/notebooks/CrackClassificationRESTAPIExample.ipynb)
+
+
 
 #### Using the GRPC API
 
