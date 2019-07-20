@@ -1,10 +1,10 @@
 # Crack classification with Tensorflow/Keras
 
-This is part of project that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
+This is part of [project](https://github.com/nhorro/nuclear-plant-crack-inspection-pipeline) that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
 
 Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet).
 
-Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline is implemented consuming this service-
+Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline can be implemented as a consumer of this service.
 
 ![Nuclear Plant Inspection Processing Pipeline](doc/assets/nuclear-plant-crack-inspection-pipeline-1.png)
 
@@ -129,11 +129,11 @@ docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name te
 
 ### Serve a model using tensorflow-serving docker image
 
-Official image tensorflow/serving:1.12.3-gpu is used for serving.
+Official image tensorflow/serving:1.12.0-gpu is used for serving.
 
 ```bash
 export SERVING_MODEL=simplenet_cracks8020
-docker run -t --rm --runtime=nvidia -p 8501:8501 -v $(realpath $PWD/models):/models/ --name crack_classification_service -e MODEL_NAME=$SERVING_MODEL tensorflow/serving:1.12.3-gpu
+docker run -t --rm --runtime=nvidia -p 8501:8501 -v $(realpath $PWD/models):/models/ --name crack_classification_service -e MODEL_NAME=$SERVING_MODEL tensorflow/serving:1.12.0-gpu
 ```
 #### Using the REST API
 
