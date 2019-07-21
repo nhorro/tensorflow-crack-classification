@@ -1,14 +1,12 @@
 # Crack classification with Tensorflow/Keras
 
-This is part of [project](https://github.com/nhorro/nuclear-plant-crack-inspection-pipeline) that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
+This is repository is part of [the nuclear plant crack inspection processing pipeline](https://github.com/nhorro/nuclear-plant-crack-inspection-pipeline) that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
 
 Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet).
 
-Any of these models is then used inside a service that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline can be implemented as a consumer of this service.
+Any of these models is then embedded in the CNNDetector component that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline can be implemented by locally instancing the tensorflow executor or consuming the model as as service.
 
 ![Nuclear Plant Inspection Processing Pipeline](doc/assets/nuclear-plant-crack-inspection-pipeline-1.png)
-
-
 
 #### SimpleNET trained on cracks dataset
 
@@ -229,9 +227,7 @@ Query model metadata to obtain method signature definition (in this case, predic
 }
 ```
 
-An example notebook of how to consume the API to classify an image [is included here](./src/notebooks/CrackClassificationRESTAPIExample.ipynb)
-
-
+The notebooks directory in src/ contains an [example](./src/notebooks/CrackClassificationRESTAPIExample.ipynb) of how to consume the API to classify an scan images.
 
 #### Using the GRPC API
 
@@ -242,4 +238,3 @@ WIP
 
 - [1] *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* 
 - [2] Özgenel, Çağlar Fırat (2018), “Concrete Crack Images for Classification”, Mendeley Data, v1: http://dx.doi.org/10.17632/5y9wdsg2zt.1
-
