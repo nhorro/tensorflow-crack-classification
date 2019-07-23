@@ -99,7 +99,7 @@ python src/utils/split_dataset.py --dir=data/datasets/cracks/ --train=80 --test=
 4. Run docker container for development (note: --network="host" is to enable access to the tensorflow serving API):
 
 ```bash
-docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name tensorflowdev1 --network="host" -p 8888:8888 custom-tensorflow1.12-py3-jupyter-opencv
+docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name tensorflowdev1 --network="host" nhorro/tensorflow1.12-py3-jupyter-opencv:1.1.0
 ```
 
 4. Train the model from a notebook:
