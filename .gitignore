@@ -2,3 +2,4 @@ data/datasets/**/*
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints
+tensorboard_logs/**/*

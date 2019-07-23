@@ -32,67 +32,23 @@ model.add(Flatten())
 model.add(Dense(1000, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 """
-def build_cracknet():
+def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
     """
         TODO: poner diferencias con paper e indicar donde se deben hacer
               cambios
     """
     model = Sequential()
-        
-    # Convolution + Pooling #1
-    model.add(
-        Conv2D( 
-            32, 
-            (11, 11), 
-            input_shape=(120,120,3),
-            strides=1,
-            activation = 'relu'
-        )
-    )    
+    
+    # Convolution + Batch Norm. + ELU + Pooling #1  
+    model.add(Conv2D( 32, (11, 11), input_shape=input_shape,
+                          activation = 'relu' ))        
     model.add(BatchNormalization())
     model.add(ELU())
     model.add( MaxPooling2D(pool_size = (7,7),strides=2))
     
-    # Convolution + Pooling #2
-    model.add(
-        Conv2D( 
-            48, 
-            (11, 11), 
-            activation = 'relu',
-            strides=1
-        )
-    )    
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (5,5), strides=2))
+    # Flattening
+    model.add( Flatten() )
     
-    # Convolution + Pooling #3
-    model.add(
-        Conv2D( 
-            64, 
-            (7, 7), 
-            activation = 'relu',
-            strides=1
-        )
-    )    
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (3,3),strides=2))
-    
-    # Convolution + Pooling #4
-    model.add(
-        Conv2D( 
-            80, 
-            (5, 5), 
-            activation = 'relu', 
-            strides=2
-        )
-    )    
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (3,3),strides=2))
-    """   
-    """
     # FC #1
     model.add( Dense( units = 5120, activation = 'relu' ) )
     model.add(ELU())
@@ -101,7 +57,8 @@ def build_cracknet():
     # FC #2
     model.add( Dense( units = 96, activation = 'softmax' ) )   
     
-    
+    # Output Layer
+    model.add( Dense( units = n_output_classes, activation = 'softmax' ) )   
     
     # Compile
     # TODO: Ver, con binary cross_entropy no está dando la probabilidad de
