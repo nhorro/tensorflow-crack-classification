@@ -20,31 +20,34 @@ from IPython.display import SVG
 from tensorflow.keras.utils import plot_model
 import matplotlib.pyplot as plt
 
-"""
-model = Sequential()
-model.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
-                 activation='relu',
-                 input_shape=input_shape))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Conv2D(64, (5, 5), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Flatten())
-model.add(Dense(1000, activation='relu'))
-model.add(Dense(num_classes, activation='softmax'))
-"""
-def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
-    """
-        TODO: poner diferencias con paper e indicar donde se deben hacer
-              cambios
-    """
+def build_cracknet(input_shape=(120,120,3),n_output_classes=2):    
     model = Sequential()
     
     # Convolution + Batch Norm. + ELU + Pooling #1  
-    model.add(Conv2D( 32, (11, 11), input_shape=input_shape,
-                          activation = 'relu' ))        
+    model.add(Conv2D( 32, (11, 11), input_shape=input_shape, activation = 'relu', strides=1 ))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add( MaxPooling2D(pool_size = (7,7),strides=2))
+    
+    # Convolution + Batch Norm. + ELU + Pooling #2
+    model.add(Conv2D( 48, (11, 11), activation = 'relu', strides=1 ))
+    model.add(BatchNormalization())
+    model.add(ELU())
+    model.add( MaxPooling2D(pool_size = (5,5),strides=2))
+    
+    # Convolution + Batch Norm. + ELU + Pooling #3
+    model.add(Conv2D( 64, (7,7), activation = 'relu', strides=1 ))
+    model.add(BatchNormalization())
+    model.add(ELU())
+    model.add( MaxPooling2D(pool_size = (3,3),strides=2))
+    
+    # Convolution + Batch Norm. + ELU + Pooling #4
+    # Note: layer commented because of error: 
+    #       'Negative dimension size caused by subtracting 3 from 1 for 'conv2d_2/convolution''
+    #model.add(Conv2D( 80, (5,5), activation = 'relu', strides=1 ))
+    #model.add(BatchNormalization())
+    #model.add(ELU())
+    #model.add( MaxPooling2D(pool_size = (3,3),strides=2))
     
     # Flattening
     model.add( Flatten() )
@@ -55,17 +58,15 @@ def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
     model.add(Dropout(0.2))
     
     # FC #2
-    model.add( Dense( units = 96, activation = 'softmax' ) )   
+    model.add( Dense( units = 96, activation = 'relu' ) )   
     
     # Output Layer
     model.add( Dense( units = n_output_classes, activation = 'softmax' ) )   
     
     # Compile
-    # TODO: Ver, con binary cross_entropy no está dando la probabilidad de
-    #       cada clase. Usar categorical_crossentropy o ver causa.
     sgd_optimizer = SGD(lr=0.002, decay=0.1/350, momentum=1)
     model.compile( optimizer = sgd_optimizer, 
-                        loss = 'binary_crossentropy', 
+                        loss = 'categorical_crossentropy', 
                         metrics = ['accuracy'] )
     return model
 
