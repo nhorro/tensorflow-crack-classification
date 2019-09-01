@@ -8,6 +8,7 @@ from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import ELU
+from tensorflow.keras.regularizers import l2
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.callbacks import CSVLogger
@@ -23,42 +24,73 @@ import matplotlib.pyplot as plt
 def build_cracknet(input_shape=(120,120,3),n_output_classes=2):    
     model = Sequential()
     
+    bias_regularization = 0.0001
+    kernel_regularization = 0.0001
+    
     # Convolution + Batch Norm. + ELU + Pooling #1  
-    model.add(Conv2D( 32, (11, 11), input_shape=input_shape, activation = 'relu', strides=1 ))
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (7,7),strides=2))
+    model.add( 
+        Conv2D( 32, (11, 11), 
+               input_shape=input_shape, 
+               activation = 'relu', 
+               strides=(1,1), 
+               name="Conv1",
+               kernel_regularizer=l2(kernel_regularization),
+               bias_regularizer=l2(bias_regularization)
+        ) ) 
+    model.add( BatchNormalization( name="Conv1BN"))
+    #model.add( ELU( name="Conv1ELU" ))
+    model.add( MaxPooling2D(pool_size = (7,7),strides=(2,2), name="Conv1Pool" ) )
     
     # Convolution + Batch Norm. + ELU + Pooling #2
-    model.add(Conv2D( 48, (11, 11), activation = 'relu', strides=1 ))
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (5,5),strides=2))
+    model.add( 
+        Conv2D( 48, (11, 11), 
+               input_shape=(52,52,32), 
+               activation = 'relu', 
+               strides=(1,1), name="Conv2",
+               kernel_regularizer=l2(kernel_regularization),
+               bias_regularizer=l2(bias_regularization)
+        ) )
+    model.add( BatchNormalization( name="Conv2BN" ))
+    #model.add( ELU( name="Conv2ELU" ))
+    model.add( MaxPooling2D(pool_size = (5,5),strides=(2,2), name="Conv2Pool" ) )
     
     # Convolution + Batch Norm. + ELU + Pooling #3
-    model.add(Conv2D( 64, (7,7), activation = 'relu', strides=1 ))
-    model.add(BatchNormalization())
-    model.add(ELU())
-    model.add( MaxPooling2D(pool_size = (3,3),strides=2))
+    model.add(
+        Conv2D( 64, (7,7), 
+        input_shape=(19,19,48), 
+        activation = 'relu', 
+        strides=(1,1), 
+        name="Conv3",
+        kernel_regularizer=l2(kernel_regularization),
+        bias_regularizer=l2(bias_regularization)
+    ) )
+    model.add(BatchNormalization(name="Conv3BN"))
+    #model.add(ELU( name="Conv3ELU"))
+    model.add( MaxPooling2D(pool_size = (3,3),strides=(1,1), name="Conv3Pool" ) ) 
     
     # Convolution + Batch Norm. + ELU + Pooling #4
-    # Note: layer commented because of error: 
-    #       'Negative dimension size caused by subtracting 3 from 1 for 'conv2d_2/convolution''
-    #model.add(Conv2D( 80, (5,5), activation = 'relu', strides=1 ))
-    #model.add(BatchNormalization())
-    #model.add(ELU())
-    #model.add( MaxPooling2D(pool_size = (3,3),strides=2))
+    model.add(
+        Conv2D( 80, (5,5), 
+               activation = 'relu', 
+               strides=(1,1), 
+               name="Conv4",
+               kernel_regularizer=l2(kernel_regularization),
+               bias_regularizer=l2(bias_regularization)
+        ))
+    model.add(BatchNormalization( name="Conv4BN" ))
+    #model.add(ELU( name="Conv4ELU" ))
+    model.add( MaxPooling2D(pool_size = (3,3),strides=(1,1), name="Conv4Pool" ) ) # Paper says (2,2) ?
     
     # Flattening
     model.add( Flatten() )
     
     # FC #1
-    model.add( Dense( units = 5120, activation = 'relu' ) )
+    model.add( Dense( units = 5120, input_shape=(96,), activation = 'relu', ) )
     model.add(ELU())
     model.add(Dropout(0.2))
     
     # FC #2
-    model.add( Dense( units = 96, activation = 'relu' ) )   
+    model.add( Dense( units = 96, input_shape=(2,), activation = 'relu' ) )   
     
     # Output Layer
     model.add( Dense( units = n_output_classes, activation = 'softmax' ) )   
