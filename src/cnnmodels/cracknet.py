@@ -38,7 +38,7 @@ def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
                bias_regularizer=l2(bias_regularization)
         ) ) 
     model.add( BatchNormalization( name="Conv1BN"))
-    #model.add( ELU( name="Conv1ELU" ))
+    model.add( ELU( name="Conv1ELU" ))
     model.add( MaxPooling2D(pool_size = (7,7),strides=(2,2), name="Conv1Pool" ) )
     
     # Convolution + Batch Norm. + ELU + Pooling #2
@@ -51,7 +51,7 @@ def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
                bias_regularizer=l2(bias_regularization)
         ) )
     model.add( BatchNormalization( name="Conv2BN" ))
-    #model.add( ELU( name="Conv2ELU" ))
+    model.add( ELU( name="Conv2ELU" ))
     model.add( MaxPooling2D(pool_size = (5,5),strides=(2,2), name="Conv2Pool" ) )
     
     # Convolution + Batch Norm. + ELU + Pooling #3
@@ -65,7 +65,7 @@ def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
         bias_regularizer=l2(bias_regularization)
     ) )
     model.add(BatchNormalization(name="Conv3BN"))
-    #model.add(ELU( name="Conv3ELU"))
+    model.add(ELU( name="Conv3ELU"))
     model.add( MaxPooling2D(pool_size = (3,3),strides=(1,1), name="Conv3Pool" ) ) 
     
     # Convolution + Batch Norm. + ELU + Pooling #4
@@ -78,7 +78,7 @@ def build_cracknet(input_shape=(120,120,3),n_output_classes=2):
                bias_regularizer=l2(bias_regularization)
         ))
     model.add(BatchNormalization( name="Conv4BN" ))
-    #model.add(ELU( name="Conv4ELU" ))
+    model.add(ELU( name="Conv4ELU" ))
     model.add( MaxPooling2D(pool_size = (3,3),strides=(1,1), name="Conv4Pool" ) ) # Paper says (2,2) ?
     
     # Flattening
