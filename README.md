@@ -1,12 +1,86 @@
-# Crack classification with Tensorflow/Keras
+# 	Crack classification with Tensorflow/Keras
 
 This is repository is part of [the nuclear plant crack inspection processing pipeline](https://github.com/nhorro/nuclear-plant-crack-inspection-pipeline) that attempts to reproduce the paper *Deep Learning-based Crack Detection Using Convolutional Neural Network and Naıve Bayes Data Fusion.* [1] 
 
-Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet).
+Two CNN models for crack detection are implemented in Tensorflow/Keras. A very simple model to test the workflow on low-end computers (that we call SimpleNet) and the model from the original paper (which we call CrackNet) is implemented in Tensorflow and Keras.
 
-Any of these models is then embedded in the CNNDetector component that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline can be implemented by locally instancing the tensorflow executor or consuming the model as as service.
+Also, transfer learning is applied to the VGG-16 model.
+
+Any of these models is then embedded in the CNNDetector component that takes an image as an input, scans it for cracks, and returns a list of the bounding boxes with the probabilities of each being a crack. The *CNNDetector* in the following nuclear plant inspection processing pipeline can be implemented by locally instancing the tensorflow executor or consuming the model as as service with REST or GRPC.
 
 ![Nuclear Plant Inspection Processing Pipeline](doc/assets/nuclear-plant-crack-inspection-pipeline-1.png)
+
+
+
+## Overview of datasets and CNN architectures
+
+The provided pre-trained models are the result of experimenting with different dataset preparations and model architectures and hyperparameter selection.
+
+### Datasets
+
+The following are publicly available datasets for crack and surface defect classification.  A script is provided to download and prepare first dataset (instructions below).
+
+| Dataset                                                      | Description                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [Concrete Crack Images for Classification](http://dx.doi.org/10.17632/5y9wdsg2zt.1) | Croncrete images having cracks collected from various buildings separated in two classes: "Positive crack" and "Negative crack". Each class has 20000 images with a total of 40000 images with 227 x 227 pixels with RGB channels. |
+| [SDNET2018](https://digitalcommons.usu.edu/all_datasets/48/) | SDNET2018 is an annotated image dataset for training, validation, and benchmarking of artificial intelligence based crack detection algorithms for concrete. SDNET2018 contains over 56,000 images of cracked and non-cracked concrete bridge decks, walls, and pavements. The dataset includes cracks as narrow as 0.06 mm and as wide as 25 mm. |
+| [NEU Surface Defect Database](http://faculty.neu.edu.cn/yunhyan/NEU_surface_defect_database.html) | In the Northeastern University (NEU) surface defect database, six kinds of typical surface defects of the hot-rolled steel strip are collected, i.e., rolled-in scale (RS), patches (Pa), crazing (Cr), pitted surface (PS), inclusion (In) and scratches (Sc). The database includes 1,800 grayscale images: 300 samples each of six different kinds of typical surface defects. |
+| [Magentic tile defect dataset](https://github.com/abin24/Magnetic-tile-defect-datasets.) | This is the datasets of the upcoming paper "Saliency of magnetic tile surface defects"The images of 6 common magnetic tile defects were collected, and their pixel level ground-truth were labeled.  (From original author description). |
+
+#### Dataset augmentation
+
+Two notebooks to experiment with [basic augmentation](src/notebooks/Image Augmentation - Basic.ipynb) and [PCA color augmentation](src/notebooks/Image Augmentation - Color PCA.ipynb) are provided.
+
+#### Dataset directory structure
+
+Datasets should be splitted in two or three sets (training and validation or training,validation, and testing set) and each set should a directory with the name of the class contain images of that class. This is the default directory structure used by Keras [flow_from_directory](https://keras.io/preprocessing/image/) method.
+
+```
+./data
+	datasets
+		training_set
+			crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+			no_crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+		validation_set
+			crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+			no_crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+		test_set
+			crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+			no_crack
+				imgxyz.jpg
+				imgxyz.jpg
+				...
+```
+
+### CNN models
+
+The following CNN model architectures are provided:
+
+| Model                              | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| [SimpleNet(Keras)](src/notebooks/) | Very simple CNN. CPU friendly.                               |
+| [CrackNet(Keras)]()                | Implementation of CNN described in [1] in Keras with Tensorflow backend. |
+| [CrackNet(Tensorflow)]()           | Implementation of CNN described in [1] in Tensorflow.        |
+| [VGG16]()                          | Transfer learning applied to VGG16.                          |
+
+
+
+## Pre-trained models
 
 #### SimpleNET trained on cracks dataset
 
@@ -54,6 +128,11 @@ WIP
 	/model-checkpoints
 	/models
 	/src
+		notebooks
+			data_preparation
+			cnn_model_development
+			examples
+		utils
 	/tensorboard_logs
 	/training_logs
 ```
@@ -64,11 +143,16 @@ where:
 - **doc**: documentation files.
 - **model-checkpoints**: checkpoints generated during model training in hd5 format.
 - **models**: models converted to Tensorflow SavedModel format ready for deployment with tensorflow serving.
-- **src**: notebooks and python scripts for model training and generating reports from training logs.
+- **src**: source code directory containing:
+  - notebooks:
+    - **data_preparation**: notebooks for EDA (Exploratory Data Analysis) and experiment with dataset augmentation.
+    - **cnn_model_development**: notebooks for development and training of CNN models.
+    - **examples**: examples and tests of using the cnn models.
+  - **utils**: various utilities
 - **tensorboard_logs**: path to store tensorboard logs.
 - **training_logs**: training logs in CSV to generate learning curves in reports.
 
-### Train a model using docker image
+### Recipe: Train a model using docker image and cracks dataset
 
 **Note:**  the following instruction steps use a [custom docker image](https://hub.docker.com/r/nhorro/tensorflow1.12-py3-jupyter-opencv) based on official Tensorflow Docker image for GPU. 
 
@@ -76,13 +160,13 @@ Tested with Ubuntu 18.04 and Geforce GTX 950M with nvidia driver version 390.116
 
 #### Steps
 
-1. Clone repository
+1. Clone repository.
 
 ```bash
 git clone https://github.com/nhorro/tensorflow-crack-classification.git
 ```
 
-2. Download crack dataset
+2. Download crack dataset.
 
 ```bash
 wget https://data.mendeley.com/datasets/5y9wdsg2zt/1/files/c0d86f9f-852e-4d00-bf45-9a0e24e3b932/Concrete%20Crack%20Images%20for%20Classification.rar
@@ -104,7 +188,7 @@ docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name te
 
 4. Train the model from a notebook:
 
-   1. Open notebook Train and export CNN model.ipynb and run. 
+   1. Open notebook [SimpleNet - Development Notebook](src/cnn_model_development/SimpleNet - Development Notebook.ipynb) and run. 
 
 5. Optional: monitor and debug with tensorboard. 
 
@@ -120,12 +204,8 @@ docker run -it --rm --runtime=nvidia -v $(realpath $PWD):/tf/notebooks --name te
    tensorboard --logdir=tensorboard_logs
    ```
 
-6. Export the model as Tensorflow SavedModel format to deploy with Tensorflow Serving.
 
-   1. Open notebook KerasToTensorflowServing.ipynb.
-   2. Select a valid hd5 file from model-checkpoints and run notebook.
-
-### Serve a model using tensorflow-serving docker image
+### Recipe: Serve a model using tensorflow-serving docker image
 
 Official image tensorflow/serving:1.12.0-gpu is used for serving.
 
@@ -227,7 +307,7 @@ Query model metadata to obtain method signature definition (in this case, predic
 }
 ```
 
-The notebooks directory in src/ contains an [example](./src/notebooks/CrackClassificationRESTAPIExample.ipynb) of how to consume the API to classify an scan images.
+There is an [example notebook](./src/notebooks/examples/CrackClassificationRESTAPIExample.ipynb) of how to consume the API to classify an scan images.
 
 #### Using the GRPC API
 
