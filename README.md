@@ -29,7 +29,7 @@ The following are publicly available datasets for crack and surface defect class
 
 #### Dataset augmentation
 
-Two notebooks to experiment with [basic augmentation](src/notebooks/dataset_preparation/ImageAugmentationBasic.ipynb) and [PCA color augmentation](src/notebooks/dataset_preparation/Image AugmentationColorPCA.ipynb) are provided.
+Two notebooks to experiment with [basic augmentation](src/notebooks/dataset_preparation/ImageAugmentationBasic.ipynb) and [PCA color augmentation](src/notebooks/dataset_preparation/ImageAugmentationColorPCA.ipynb) are provided.
 
 #### Dataset directory structure
 
