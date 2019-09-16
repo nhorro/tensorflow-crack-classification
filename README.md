@@ -29,7 +29,7 @@ The following are publicly available datasets for crack and surface defect class
 
 #### Dataset augmentation
 
-Two notebooks to experiment with [basic augmentation](src/notebooks/dataset_preparation/Image Augmentation - Basic.ipynb) and [PCA color augmentation](src/notebooks/dataset_preparation/Image Augmentation - Color PCA.ipynb) are provided.
+Two notebooks to experiment with [basic augmentation](src/notebooks/dataset_preparation/ImageAugmentationBasic.ipynb) and [PCA color augmentation](src/notebooks/dataset_preparation/Image AugmentationColorPCA.ipynb) are provided.
 
 #### Dataset directory structure
 
@@ -73,10 +73,10 @@ The following CNN model architectures are provided:
 
 | Model                                                        | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [SimpleNet(Keras)](src/notebooks/cnn_model_development/SimpleNet - Development Notebook.ipynb) | Very simple CNN. CPU friendly.                               |
-| [CrackNet(Keras)](src/notebooks/cnn_model_development/CrackNet - Development Notebook - Keras.ipynb) | Implementation of CNN described in [1] in Keras with Tensorflow backend. |
-| [CrackNet(Tensorflow)](src/notebooks/cnn_model_development/CrackNet - Development Notebook - Tensorflow.ipynb) | Implementation of CNN described in [1] in Tensorflow.        |
-| [VGG16](src/notebooks/cnn_model_development/Transfer Learning with VGG16 - Development Notebook.ipynb) | Transfer learning applied to VGG16.                          |
+| [SimpleNet(Keras)](src/notebooks/cnn_model_development/SimpleNetDevelopmentNotebook.ipynb) | Very simple CNN. CPU friendly.                               |
+| [CrackNet(Keras)](src/notebooks/cnn_model_development/CrackNetDevelopmentNotebookKeras.ipynb) | Implementation of CNN described in [1] in Keras with Tensorflow backend. |
+| [CrackNet(Tensorflow)](src/notebooks/cnn_model_development/CrackNetDevelopmentNotebookTensorflow.ipynb) | Implementation of CNN described in [1] in Tensorflow.        |
+| [VGG16](src/notebooks/cnn_model_development/TransferLearningWithVGG16DevelopmentNotebook.ipynb) | Transfer learning applied to VGG16.                          |
 
 
 
@@ -148,7 +148,7 @@ where:
     - **data_preparation**: notebooks for EDA (Exploratory Data Analysis) and experiment with dataset augmentation.
     - **cnn_model_development**: notebooks for development and training of CNN models.
     - **examples**: examples and tests of using the cnn models.
-  - **utils**: various utilities
+  - **utils**: utilities for dataset preparation and model reporting/evaluation.
 - **tensorboard_logs**: path to store tensorboard logs.
 - **training_logs**: training logs in CSV to generate learning curves in reports.
 
